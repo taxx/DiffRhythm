@@ -117,6 +117,12 @@ if __name__ == "__main__":
         default="infer/example/output",
         help="output directory fo generated song",
     )  # output directory fo target song
+    parser.add_argument(
+        "--output-filename",
+        type=str,
+        default="output.wav",
+        help="filename for the generated song",
+    )  # output directory fo target song
     args = parser.parse_args()
 
     assert (
@@ -172,5 +178,7 @@ if __name__ == "__main__":
     output_dir = args.output_dir
     os.makedirs(output_dir, exist_ok=True)
 
-    output_path = os.path.join(output_dir, "output.wav")
+    output_filename = args.output_filename
+
+    output_path = os.path.join(output_dir, output_filename)
     torchaudio.save(output_path, generated_song, sample_rate=44100)
