@@ -22,3 +22,8 @@ Unidecode==1.3.8
 phonemizer==3.3.0
 LangSegment==0.3.5
 inflect==7.5.0
+ollama
+discord
+asyncio
+PyNaCl
+dotenv
