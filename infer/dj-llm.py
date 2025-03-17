@@ -117,7 +117,7 @@ if __name__ == "__main__":
     chunked=True
     output_dir = "generated/instrumental"
 
-    audio_length = 285
+    audio_length = 95
     if audio_length == 95:
         max_frames = 2048
     elif audio_length == 285:  # current not available
