@@ -167,6 +167,12 @@ async def lyrics(interaction: discord.Interaction, subject: str):
 
     # Send the result after processing
     if lyrics_text:
+        if len(lyrics_text) > 2000:
+            chunks = [lyrics_text[i:i+2000] for i in range(0, len(lyrics_text), 2000)]
+            for chunk in chunks:
+                await interaction.followup.send(f"Lyrics: \r\n {chunk}", ephemeral=True)
+        else:
+            await interaction.followup.send(f"Lyrics: \r\n {lyrics_text}", ephemeral=True)        
         await interaction.followup.send(lyrics_text, ephemeral=True)  # Use followup here
     else:
         await interaction.followup.send("Sorry, I couldn't find the lyrics.", ephemeral=True)  # Use followup here
