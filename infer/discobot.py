@@ -29,8 +29,9 @@ from infer_utils import (
 
 # Load environment variables from .env file
 load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 MUSIC_FOLDER = os.getenv("MUSIC_FOLDER")
+
 output_dir = "/home/tobbe/source/DiffRhythm/generated"
 
 intents = discord.Intents.default()
@@ -311,4 +312,4 @@ async def sync(ctx):
     await ctx.send("Commands synced!")
 
 
-bot.run(TOKEN)
+bot.run(DISCORD_TOKEN)
