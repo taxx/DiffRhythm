@@ -80,14 +80,26 @@ def inference(
         return output
 
 def get_lyrics_prompt():
-    ollama_prompt = """Hi! Today we are going to create lyrics!
-    Each line must follow: [mm:ss.xx]Lyric content
-    Example of valid format:
-    [00:10.00]Moonlight spills through broken blinds
-    [00:13.20]Your shadow dances on the dashboard shrine
-    ". The song could be about anything, but prefer post-apocalyptic, futuristic, sci-fi, sci-fi love stories and similar. Max song lenght should be around 2 minutes.
-    Don't include info about anything else like, intro, outro, chorus etc. Just keep the pure lyrics in the format described earlier. Don't include any extra spacing and such.
-    Feel free to be slow or fast with the lyrics and increase the lenght of rows where a pause is needed.
+    ollama_prompt = """
+    Can you help me create lyrics for a song, here are the technical constraints:
+    "Lyrics Format Requirements
+
+        Each line must follow: [mm:ss.xx]Lyric content
+        Example of valid format:
+        "
+        [00:10.00]You... only... you
+        [00:23.20]You are ... my sunshine
+        [00:43.20]You are ... my darkness
+        [00:53.20]You are ... everything
+        "
+        Maximum 95 seconds songs
+        Total timestamps should not exceed 01:35.00 (95 seconds)
+    "
+
+    The song could be about anything, but prefer pop, upbeat, fast paced.
+    Don't include info about anything else like, intro, outro, chorus etc.
+    Just keep the pure lyrics in the format described earlier.
+    Don't include any extra spacing and such.
     """
     #print(ollama_prompt)
     ollama_model = "deepseek-r1:14b"
@@ -105,7 +117,11 @@ def get_lyrics_prompt():
     return reply_text
 
 def get_musicstyle_prompt():
-    ollama_prompt = "Hi! Today we are going to generate short music description for an AI to generate music. Here is an example: 'Arctic research station, theremin auroras dancing with geomagnetic storms'. Please reply in a similar manner, be brief."
+    ollama_prompt = """
+    Hi! Today we are going to generate short music description for an AI to generate music.
+    Here is an example: 'Modern pop, female vocalist'.
+    Please reply in a similar manner, be brief." \
+    """
     ollama_model = "deepseek-r1:14b"
     #print(ollama_prompt)
     ollama_client = ollama.Client(host="http://localhost:11434")

@@ -80,7 +80,11 @@ def inference(
         return output
 
 def get_prompt():
-    ollama_prompt = "Hi! Today we are going to generate short music description for an AI to generate music. Here is an example: 'Arctic research station, theremin auroras dancing with geomagnetic storms'. Please reply in a similar manner, be brief."
+    ollama_prompt = """
+    Hi! Today we are going to generate short music description for an AI to generate music.
+    Here is an example: 'Upbeat pop melody with synth hooks and electronic drums - Dark Ambient Track, industrial'.
+    Please reply in a similar manner, be brief, don't include anything extra in the reply." \
+    """
     ollama_model = "deepseek-r1:14b"
 
     ollama_client = ollama.Client(host="http://localhost:11434")
@@ -127,7 +131,7 @@ if __name__ == "__main__":
 
     # Prompt och filnamn
     #
-    max_iterations = 20
+    max_iterations = 10
     for i in range(max_iterations):
         ref_prompt = get_prompt()
         output_filename = get_filename(ref_prompt)
@@ -162,6 +166,6 @@ if __name__ == "__main__":
 
         output_path = os.path.join(output_dir, output_filename)
         torchaudio.save(output_path, generated_song, sample_rate=44100)
-        print("Sleeping for 30 seconds...")
-        time.sleep(30)
+        #print("Sleeping for 30 seconds...")
+        #time.sleep(30)
 
