@@ -117,17 +117,17 @@ if __name__ == "__main__":
     chunked=True
     output_dir = "generated/instrumental"
 
-    audio_length = 95
+    audio_length = 285
     if audio_length == 95:
         max_frames = 2048
     elif audio_length == 285:  # current not available
         max_frames = 6144
 
-    cfm, tokenizer, muq, vae = prepare_model(device)
+    cfm, tokenizer, muq, vae = prepare_model(max_frames, device)
 
     # lyrics (tomt för instrumelta låtar)
     lrc = ""
-    lrc_prompt, start_time = get_lrc_token(lrc, tokenizer, device)
+    lrc_prompt, start_time = get_lrc_token(max_frames, lrc, tokenizer, device)
 
     # Prompt och filnamn
     #

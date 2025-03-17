@@ -160,7 +160,7 @@ if __name__ == "__main__":
     elif audio_length == 285:  # current not available
         max_frames = 6144
 
-    cfm, tokenizer, muq, vae = prepare_model(device)
+    cfm, tokenizer, muq, vae = prepare_model(max_frames, device)
 
     # Prompt och filnamn
     #
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     for i in range(max_iterations):
         # lyrics (tomt för instrumelta låtar)
         lrc = get_lyrics_prompt()
-        lrc_prompt, start_time = get_lrc_token(lrc, tokenizer, device)
+        lrc_prompt, start_time = get_lrc_token(max_frames, lrc, tokenizer, device)
         
         ref_prompt = get_musicstyle_prompt()
         output_filename = get_filename(ref_prompt)

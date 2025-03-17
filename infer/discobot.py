@@ -99,14 +99,14 @@ def generate_music(music_style_prompt: str, lyrics_text: str):
     elif audio_length == 285:  # current not available
         max_frames = 6144
 
-    cfm, tokenizer, muq, vae = prepare_model(device)
+    cfm, tokenizer, muq, vae = prepare_model(max_frames, device)
 
     ref_prompt = get_musicstyle_prompt(music_style_prompt)
     output_filename = get_filename(ref_prompt)
 
     # lyrics (tomt för instrumelta låtar)
     ##lrc = ""
-    lrc_prompt, start_time = get_lrc_token(lyrics_text, tokenizer, device)
+    lrc_prompt, start_time = get_lrc_token(max_frames, lyrics_text, tokenizer, device)
 
     #print(ref_prompt)
     print(output_filename)
