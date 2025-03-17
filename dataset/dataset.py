@@ -1,12 +1,12 @@
 # Copyright (c) 2025 ASLP-LAB
 #               2025 Huakang Chen  (huakang@mail.nwpu.edu.cn)
 #
-# Licensed under the Stability AI License (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
-#   https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md
-#
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -80,7 +80,8 @@ class DiffusionDataset(torch.utils.data.Dataset):
         else:
             raise
         
-        lrc_with_time = lrc_with_time[:-1] if len(lrc_with_time) >= 1 else lrc_with_time # drop last, can be empty
+        if self.max_frames == 2048:
+            lrc_with_time = lrc_with_time[:-1] if len(lrc_with_time) >= 1 else lrc_with_time # drop last, can be empty
 
         lrc = torch.zeros((self.max_frames,), dtype=torch.long)
         

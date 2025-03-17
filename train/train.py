@@ -2,12 +2,12 @@
 #               2025 Ziqian Ning   (ningziqian@mail.nwpu.edu.cn)
 #               2025 Huakang Chen  (huakang@mail.nwpu.edu.cn)
 #
-# Licensed under the Stability AI License (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
-#   https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md
-#
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,12 +36,13 @@ def main():
         model_cls = DiT
 
     model = CFM(
-        transformer=model_cls(**model_config["model"]),
+        transformer=model_cls(**model_config["model"], max_frames=args.max_frames),
         num_channels=model_config["model"]['mel_dim'],
         audio_drop_prob=args.audio_drop_prob,
         cond_drop_prob=args.cond_drop_prob,
         style_drop_prob=args.style_drop_prob,
-        lrc_drop_prob=args.lrc_drop_prob
+        lrc_drop_prob=args.lrc_drop_prob,
+        max_frames=args.max_frames
     )
 
     total_params = sum(p.numel() for p in model.parameters())

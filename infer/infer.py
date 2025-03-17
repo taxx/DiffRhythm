@@ -2,12 +2,12 @@
 #               2025 Huakang Chen  (huakang@mail.nwpu.edu.cn)
 #               2025 Guobin Ma     (guobin.ma@gmail.com)
 #
-# Licensed under the Stability AI License (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
-#   https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md
-#
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         "--audio-length",
         type=int,
         default=95,
-        choices=[95],
+        choices=[95, 285],
         help="length of generated song",
     )  # length of target song
     parser.add_argument(
@@ -116,13 +116,7 @@ if __name__ == "__main__":
         type=str,
         default="infer/example/output",
         help="output directory fo generated song",
-    )  # output directory fo target song
-    parser.add_argument(
-        "--output-filename",
-        type=str,
-        default="output.wav",
-        help="filename for the generated song",
-    )  # output directory fo target song
+    )  # output directory of target song
     args = parser.parse_args()
 
     assert (
@@ -132,9 +126,11 @@ if __name__ == "__main__":
         args.ref_prompt and args.ref_audio_path
     ), "only one of them should be provided"
 
-    assert torch.cuda.is_available(), "only available on gpu"
-
-    device = "cuda"
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.mps.is_available():
+        device = "mps"
 
     audio_length = args.audio_length
     if audio_length == 95:
@@ -142,14 +138,14 @@ if __name__ == "__main__":
     elif audio_length == 285:  # current not available
         max_frames = 6144
 
-    cfm, tokenizer, muq, vae = prepare_model(device)
+    cfm, tokenizer, muq, vae = prepare_model(max_frames, device, repo_id=args.repo_id)
 
     if args.lrc_path:
-        with open(args.lrc_path, "r") as f:
+        with open(args.lrc_path, "r", encoding='utf-8') as f:
             lrc = f.read()
     else:
         lrc = ""
-    lrc_prompt, start_time = get_lrc_token(lrc, tokenizer, device)
+    lrc_prompt, start_time = get_lrc_token(max_frames, lrc, tokenizer, device)
 
     if args.ref_audio_path:
         style_prompt = get_style_prompt(muq, args.ref_audio_path)

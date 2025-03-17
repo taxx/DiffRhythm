@@ -2,12 +2,12 @@
 #               2025 Huakang Chen  (huakang@mail.nwpu.edu.cn)
 #               2025 Guobin Ma     (guobin.ma@gmail.com)
 #
-# Licensed under the Stability AI License (the "License");
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
-#   https://huggingface.co/stabilityai/stable-audio-open-1.0/blob/main/LICENSE.md
-#
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,9 @@ from mutagen.mp3 import MP3
 import os
 import numpy as np
 from huggingface_hub import hf_hub_download
+
+from sys import path
+path.append(os.getcwd())
 
 from model import DiT, CFM
 
@@ -82,7 +85,7 @@ def decode_audio(latents, vae_model, chunked=False, overlap=32, chunk_size=128):
         return y_final
 
 
-def prepare_model(device, repo_id="ASLP-lab/DiffRhythm-base"):
+def prepare_model(max_frames, device, repo_id="ASLP-lab/DiffRhythm-base"):
     # prepare cfm model
     dit_ckpt_path = hf_hub_download(
         repo_id=repo_id, filename="cfm_model.pt", cache_dir="./pretrained"
@@ -92,8 +95,9 @@ def prepare_model(device, repo_id="ASLP-lab/DiffRhythm-base"):
         model_config = json.load(f)
     dit_model_cls = DiT
     cfm = CFM(
-        transformer=dit_model_cls(**model_config["model"]),
+        transformer=dit_model_cls(**model_config["model"], max_frames=max_frames),
         num_channels=model_config["model"]["mel_dim"],
+        max_frames=max_frames
     )
     cfm = cfm.to(device)
     cfm = load_checkpoint(cfm, dit_ckpt_path, device=device, use_ema=False)
@@ -186,7 +190,7 @@ def parse_lyrics(lyrics: str):
 
 class CNENTokenizer:
     def __init__(self):
-        with open("./g2p/g2p/vocab.json", "r") as file:
+        with open("./g2p/g2p/vocab.json", "r", encoding='utf-8') as file:
             self.phone2id: dict = json.load(file)["vocab"]
         self.id2phone = {v: k for (k, v) in self.phone2id.items()}
         from g2p.g2p_generation import chn_eng_g2p
@@ -202,9 +206,8 @@ class CNENTokenizer:
         return "|".join([self.id2phone[x - 1] for x in token])
 
 
-def get_lrc_token(text, tokenizer, device):
+def get_lrc_token(max_frames, text, tokenizer, device):
 
-    max_frames = 2048
     lyrics_shift = 0
     sampling_rate = 44100
     downsample_rate = 2048
@@ -227,7 +230,8 @@ def get_lrc_token(text, tokenizer, device):
         for (time_start, line) in lrc_with_time
         if time_start < max_secs
     ]
-    lrc_with_time = lrc_with_time[:-1] if len(lrc_with_time) >= 1 else lrc_with_time
+    if max_frames == 2048:
+        lrc_with_time = lrc_with_time[:-1] if len(lrc_with_time) >= 1 else lrc_with_time
 
     normalized_start_time = 0.0
 
@@ -263,8 +267,7 @@ def get_lrc_token(text, tokenizer, device):
 
 
 def load_checkpoint(model, ckpt_path, device, use_ema=True):
-    if device == "cuda":
-        model = model.half()
+    model = model.half()
 
     ckpt_type = ckpt_path.split(".")[-1]
     if ckpt_type == "safetensors":

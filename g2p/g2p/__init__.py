@@ -16,7 +16,6 @@ class PhonemeBpeTokenizer:
     def __init__(self, vacab_path="./g2p/g2p/vocab.json"):
         self.lang2backend = {
             "zh": "cmn",
-            "ja": "ja",
             "en": "en-us",
             "fr": "fr-fr",
             "ko": "ko",
@@ -25,11 +24,11 @@ class PhonemeBpeTokenizer:
         self.text_tokenizers = {}
         self.int_text_tokenizers()
 
-        with open(vacab_path, "r") as f:
+        with open(vacab_path, "r", encoding='utf-8') as f:
             json_data = f.read()
         data = json.loads(json_data)
         self.vocab = data["vocab"]
-        LangSegment.setfilters(["en", "zh", "ja", "ko", "fr", "de"])
+        LangSegment.setfilters(["en", "zh", "ko", "fr", "de"])
 
     def int_text_tokenizers(self):
         for key, value in self.lang2backend.items():

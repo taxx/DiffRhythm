@@ -27,11 +27,6 @@ phonemizer_en = EspeakBackend(
 )
 # phonemizer_en.separator = separator
 
-phonemizer_ja = EspeakBackend(
-    "ja", preserve_punctuation=False, with_stress=False, language_switch="remove-flags"
-)
-# phonemizer_ja.separator = separator
-
 phonemizer_ko = EspeakBackend(
     "ko", preserve_punctuation=False, with_stress=False, language_switch="remove-flags"
 )
@@ -53,14 +48,13 @@ phonemizer_de = EspeakBackend(
 
 lang2backend = {
     "zh": phonemizer_zh,
-    "ja": phonemizer_ja,
     "en": phonemizer_en,
     "fr": phonemizer_fr,
     "ko": phonemizer_ko,
     "de": phonemizer_de,
 }
 
-with open("./g2p/utils/mls_en.json", "r") as f:
+with open("./g2p/utils/mls_en.json", "r", encoding='utf-8') as f:
     json_data = f.read()
 token = json.loads(json_data)
 
