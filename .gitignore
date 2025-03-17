@@ -6,3 +6,6 @@ pretrained/
 .DS_Store
 ckpt
 wandb
+venv
+generated
+.env
