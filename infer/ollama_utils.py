@@ -30,12 +30,13 @@ def get_lyrics_prompt(theme, tags_gen):
     You MUST follow the previous instructions about the format of the lyrics!.
     Please don't include anything extra, like repeating the prompt or anything else, just the lyrics!
     Also don't include any extra spacing and such.
+    Empty markings like [01:45.00] or [01:45.00][02:45.00] etc. are not allowed.
 
     ### **Negative Examples (Prohibited)**  
     - Incorrect: `[01:30.00](Piano Interlude)`  
     - Incorrect: `[02:00.00][Chorus]`  
     - Incorrect: Blank lines, line breaks, or annotations
-    - Incorrect: [01:45.00]
+    - Incorrect: Example, empty markers without text such as `[01:45.00]` or `[01:45.00][02:45.00]`
     """
 
     ollama_model = "deepseek-r1:14b"
