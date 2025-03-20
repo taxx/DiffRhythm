@@ -89,7 +89,6 @@ def inference(
 
         return output
 
-
 def generate_music(music_style_prompt: str, lyrics_text: str):
     device = "cuda"
 
@@ -100,7 +99,7 @@ def generate_music(music_style_prompt: str, lyrics_text: str):
         max_frames = 2048
         repo_id="ASLP-lab/DiffRhythm-base"
 
-    elif audio_length == 285:  # current not available
+    elif audio_length == 285:
         max_frames = 6144
         repo_id = "ASLP-lab/DiffRhythm-full"
 
@@ -195,7 +194,7 @@ async def lyrics(interaction: discord.Interaction, subject: str):
     music_style="The style of music you want to generate",
     lyrics_subject="[Optional] The subject of the lyrics"
 )
-async def generateandplay(interaction: discord.Interaction, music_style: str, lyrics_subject: str=""):
+async def generateandplay(interaction: discord.Interaction, music_style: str, lyrics_subject: str="", ):
     if not music_style:
         await interaction.response.send_message("Music style is required!", ephemeral=True)
         return
@@ -209,7 +208,7 @@ async def generateandplay(interaction: discord.Interaction, music_style: str, ly
 
     lyrics_text = ""
     if lyrics_subject and lyrics_subject != "":
-        lyrics_text = await asyncio.to_thread(get_lyrics_prompt, lyrics_subject)
+        lyrics_text = await asyncio.to_thread(get_lyrics_prompt, lyrics_subject, music_style)
         if len(lyrics_text) > 2000:
             chunks = [lyrics_text[i:i+2000] for i in range(0, len(lyrics_text), 2000)]
             for chunk in chunks:
@@ -221,7 +220,7 @@ async def generateandplay(interaction: discord.Interaction, music_style: str, ly
     music_style_prompt = await asyncio.to_thread(get_musicstyle_prompt, music_style)
     await interaction.followup.send("Creating " + music_style_prompt + ". Please wait...", ephemeral=True)
 
-    generated_file_path = await asyncio.to_thread(generate_music, music_style_prompt, lyrics_text)
+    generated_file_path = await asyncio.to_thread(generate_music, music_style, lyrics_text)
 
     # Send the result after processing
     if generated_file_path:
