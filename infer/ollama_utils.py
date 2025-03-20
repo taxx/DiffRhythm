@@ -35,6 +35,7 @@ def get_lyrics_prompt(theme, tags_gen):
     - Incorrect: `[01:30.00](Piano Interlude)`  
     - Incorrect: `[02:00.00][Chorus]`  
     - Incorrect: Blank lines, line breaks, or annotations
+    - Incorrect: [01:45.00]
     """
 
     ollama_model = "deepseek-r1:14b"
